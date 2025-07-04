@@ -39,6 +39,8 @@
             align-items: center;
             padding: 20px;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .container {
@@ -47,17 +49,20 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            position: relative;
+            z-index: 10;
         }
 
         header {
             text-align: center;
             padding: 25px;
-            background: rgba(13, 17, 23, 0.9);
+            background: rgba(13, 17, 23, 0.95);
             border-radius: 16px;
             border: 1px solid var(--border);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(8px);
         }
 
             header::before {
@@ -131,7 +136,7 @@
 
         .config-panel {
             flex: 0 0 350px;
-            background: rgba(13, 17, 23, 0.9);
+            background: rgba(13, 17, 23, 0.95);
             border-radius: 16px;
             padding: 25px;
             border: 1px solid var(--border);
@@ -139,17 +144,20 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
         }
 
         .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(13, 17, 23, 0.9);
+            background: rgba(13, 17, 23, 0.95);
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--border);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
         }
 
         .panel-title {
@@ -186,7 +194,12 @@
             color: var(--gray);
             cursor: pointer;
             font-size: 1.1rem;
+            transition: color 0.2s;
         }
+
+            #toggleVisibility:hover {
+                color: var(--light);
+            }
 
         .info-box {
             background: rgba(22, 27, 34, 0.8);
@@ -265,6 +278,7 @@
             gap: 25px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230d1117"/><path d="M0 50 L100 50 M50 0 L50 100" stroke="%23161b22" stroke-width="1"/></svg>');
             background-size: 40px 40px;
+            scroll-behavior: smooth;
         }
 
         .message {
@@ -407,9 +421,10 @@
         .input-container {
             display: flex;
             padding: 20px;
-            background: rgba(22, 27, 34, 0.9);
+            background: rgba(22, 27, 34, 0.95);
             border-top: 1px solid var(--border);
             gap: 15px;
+            position: relative;
         }
 
         #messageInput {
@@ -423,6 +438,11 @@
             outline: none;
             transition: border-color 0.3s;
             font-family: 'SF Pro Text', -apple-system, sans-serif;
+            resize: none;
+            height: 55px;
+            min-height: 55px;
+            max-height: 150px;
+            overflow-y: auto;
         }
 
             #messageInput:focus {
@@ -444,6 +464,7 @@
             justify-content: center;
             font-size: 1.3rem;
             box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            flex-shrink: 0;
         }
 
             #sendButton:hover {
@@ -496,19 +517,21 @@
             padding: 20px;
             color: var(--gray);
             font-size: 0.95rem;
-            background: rgba(13, 17, 23, 0.9);
+            background: rgba(13, 17, 23, 0.95);
             border-radius: 16px;
             border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
         }
 
         .watermark {
-            position: absolute;
+            position: fixed;
             bottom: 20px;
             right: 20px;
             color: rgba(240, 246, 252, 0.05);
             font-size: 1.8rem;
             font-weight: 900;
-            z-index: -1;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .deep-think-toggle {
@@ -583,6 +606,97 @@
                 max-width: 90%;
             }
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                gap: 15px;
+            }
+
+            header {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .tag {
+                font-size: 0.8rem;
+                padding: 5px 12px;
+            }
+
+            .config-panel, .chat-container {
+                padding: 20px;
+            }
+
+            .chat-history {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .message {
+                padding: 15px;
+            }
+
+            .input-container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .panel-title {
+                font-size: 1.2rem;
+            }
+
+            .model-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .message-content pre {
+                padding: 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--gray);
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+            .copy-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                color: var(--light);
+            }
     </style>
 </head>
 <body>
@@ -631,7 +745,7 @@
                 </div>
 
                 <div class="features">
-                    <h2 class="panel-title"><i class="fas fa-star"></i> Fitur Nexus AI</h2>
+                    <h2 class="panel-title"><i class="fas fa-star"></i> Fitur Nexora AI</h2>
 
                     <div class="feature-item">
                         <div class="feature-icon"><i class="fas fa-terminal"></i></div>
@@ -673,7 +787,7 @@
                 <div class="chat-history" id="chatHistory">
                     <div class="message ai-message">
                         <div class="message-content">
-                            <strong>Halo Programmer!</strong> Saya Nexus AI, asisten pemrograman AI Anda.
+                            <strong>Halo Programmer!</strong> Saya Nexora AI, asisten pemrograman AI Anda.
                             Masukkan API key Anda untuk memulai. Saya dapat membantu Anda dengan:
 
                             <ul style="margin-top: 15px; padding-left: 20px;">
@@ -703,9 +817,18 @@
 
                             <div style="margin-top: 20px;">
                                 <strong>Contoh permintaan pemrograman:</strong>
-                                <pre style="margin-top: 10px;">Buat fungsi JavaScript untuk validasi email dengan regex</pre>
-                                <pre>Perbaiki bug dalam kode Python ini: [tempel kode]</pre>
-                                <pre>Jelaskan perbedaan antara async/await dan promise</pre>
+                                <pre style="margin-top: 10px; position: relative;">
+                                <button class="copy-btn">Salin</button>
+                                    Buat fungsi JavaScript untuk validasi email dengan regex
+                                </pre>
+                                <pre style="position: relative;">
+                                <button class="copy-btn">Salin</button>
+                                    Perbaiki bug dalam kode Python ini: [tempel kode]
+                                </pre>
+                                <pre style="position: relative;">
+                                <button class="copy-btn">Salin</button>
+                                    Jelaskan perbedaan antara async/await dan promise
+                                </pre>
                             </div>
                         </div>
                     </div>
@@ -713,7 +836,7 @@
 
                 <div class="typing-indicator" id="typingIndicator">
                     <div class="typing-content">
-                        <div class="thinking-text">Nexus AI sedang berpikir...</div>
+                        <div class="thinking-text">Nexora AI sedang berpikir...</div>
                         <div class="dots-container">
                             <div class="dot"></div>
                             <div class="dot"></div>
@@ -723,7 +846,7 @@
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="messageInput" placeholder="Ketik permintaan pemrograman Anda..." disabled>
+                    <textarea id="messageInput" placeholder="Ketik permintaan pemrograman Anda..." disabled></textarea>
                     <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -731,7 +854,7 @@
 
         <div class="footer">
             <p>Nexora AI menggunakan model DeepSeek-R1 melalui OpenRouter API. API key disimpan secara lokal di browser Anda.</p>
-            <p>© 2025 Nexora AI - Nocode Programming Assistant | Dibangun untuk pengembang dan pembuat aplikasi</p>
+            <p>© 2023 Nexora AI - Nocode Programming Assistant | Dibangun untuk pengembang dan pembuat aplikasi</p>
         </div>
     </div>
 
@@ -754,7 +877,7 @@
             let isDeepThinking = false;
 
             // Load saved API key if exists
-            const savedKey = localStorage.getItem('nexusApiKey');
+            const savedKey = localStorage.getItem('nexoraApiKey');
             if (savedKey) {
                 apiKeyInput.value = savedKey;
                 apiKey = savedKey;
@@ -782,12 +905,18 @@
             // Send message on button click
             sendButton.addEventListener('click', sendMessage);
 
-            // Send message on Enter key
-            messageInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
+            // Send message on Ctrl+Enter
+            messageInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
                     e.preventDefault();
                     sendMessage();
                 }
+            });
+
+            // Auto-resize textarea
+            messageInput.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
             });
 
             // Enable chat interface
@@ -821,6 +950,24 @@
                 contentDiv.classList.add('message-content');
                 contentDiv.innerHTML = formatMessageContent(text);
 
+                // Add copy button to code blocks
+                const preElements = contentDiv.querySelectorAll('pre');
+                preElements.forEach(pre => {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.classList.add('copy-btn');
+                    copyBtn.textContent = 'Salin';
+                    copyBtn.addEventListener('click', () => {
+                        const code = pre.querySelector('code').textContent;
+                        navigator.clipboard.writeText(code).then(() => {
+                            copyBtn.textContent = 'Tersalin!';
+                            setTimeout(() => {
+                                copyBtn.textContent = 'Salin';
+                            }, 2000);
+                        });
+                    });
+                    pre.appendChild(copyBtn);
+                });
+
                 messageDiv.appendChild(contentDiv);
                 chatHistory.appendChild(messageDiv);
 
@@ -836,6 +983,7 @@
                 // Add user message to chat
                 showMessage(message, 'user');
                 messageInput.value = '';
+                messageInput.style.height = '55px'; // Reset height
 
                 // Show enhanced typing indicator
                 typingIndicator.style.display = 'flex';
@@ -853,7 +1001,7 @@
                     if (isDeepThinking) {
                         messages.unshift({
                             "role": "system",
-                            "content": "Anda adalah asisten pemrograman AI. Berikan penjelasan langkah demi langkah yang rinci untuk setiap solusi. Gunakan format markdown untuk kode dan penekanan teks."
+                            "content": "Anda adalah asisten pemrograman AI Nexora. Berikan penjelasan langkah demi langkah yang rinci untuk setiap solusi. Gunakan format markdown untuk kode dan penekanan teks."
                         });
                     }
 
@@ -864,8 +1012,10 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            "model": "deepseek/deepseek-r1-0528:free",
-                            "messages": messages
+                            "model": "deepseek/deepseek-r1:free",
+                            "messages": messages,
+                            "temperature": 0.7,
+                            "max_tokens": 2048
                         })
                     });
 
@@ -892,9 +1042,27 @@
             apiKeyInput.addEventListener('input', function () {
                 apiKey = this.value.trim();
                 if (apiKey) {
-                    localStorage.setItem('nexusApiKey', apiKey);
+                    localStorage.setItem('nexoraApiKey', apiKey);
                     enableChat();
+                } else {
+                    messageInput.disabled = true;
+                    sendButton.disabled = true;
                 }
+            });
+
+            // Copy button functionality for example prompts
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const codeBlock = this.parentElement;
+                    const text = codeBlock.textContent.replace('Salin', '').trim();
+
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.textContent = 'Tersalin!';
+                        setTimeout(() => {
+                            this.textContent = 'Salin';
+                        }, 2000);
+                    });
+                });
             });
         });
     </script>
