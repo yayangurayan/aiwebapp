@@ -875,6 +875,7 @@
             let apiKey = '';
             let isKeyVisible = false;
             let isDeepThinking = false;
+            let conversationHistory = [];
 
             // Load saved API key if exists
             const savedKey = localStorage.getItem('nexoraApiKey');
@@ -926,16 +927,16 @@
                 messageInput.focus();
             }
 
-            // Format message content
+            // Enhanced Markdown parser
             function formatMessageContent(text) {
-                // Replace markdown-like syntax with HTML
+                // Replace code blocks first to avoid conflicts
                 let formattedText = text
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
-                    .replace(/`(.*?)`/g, '<code>$1</code>') // Inline code
-                    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // Code blocks
-                    .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>') // Blockquotes
-                    .replace(/\n/g, '<br>'); // Line breaks
+                    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
+                    .replace(/\n/g, '<br>');
 
                 return formattedText;
             }
@@ -980,6 +981,12 @@
                 const message = messageInput.value.trim();
                 if (!message) return;
 
+                // Add user message to history
+                conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
+
                 // Add user message to chat
                 showMessage(message, 'user');
                 messageInput.value = '';
@@ -990,18 +997,14 @@
                 chatHistory.scrollTop = chatHistory.scrollHeight;
 
                 try {
-                    // Add system prompt for deep thinking if enabled
-                    const messages = [
-                        {
-                            "role": "user",
-                            "content": message
-                        }
-                    ];
+                    // Prepare messages array
+                    let messages = [...conversationHistory];
 
+                    // Add system prompt for deep thinking if enabled
                     if (isDeepThinking) {
                         messages.unshift({
-                            "role": "system",
-                            "content": "Anda adalah asisten pemrograman AI Nexora. Berikan penjelasan langkah demi langkah yang rinci untuk setiap solusi. Gunakan format markdown untuk kode dan penekanan teks."
+                            role: 'system',
+                            content: "Anda adalah asisten pemrograman AI Nexora. Berikan penjelasan langkah demi langkah yang rinci untuk setiap solusi. Gunakan format markdown untuk kode dan penekanan teks."
                         });
                     }
 
@@ -1026,6 +1029,12 @@
 
                     const data = await response.json();
                     const aiResponse = data.choices[0].message.content;
+
+                    // Add AI response to history
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: aiResponse
+                    });
 
                     // Hide typing indicator and show response
                     typingIndicator.style.display = 'none';
